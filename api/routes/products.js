@@ -40,8 +40,16 @@ router.post("/", (req, res, next) => {
       console.log(result);
       if (result) {
         res.status(201).json({
-          message: "Handling POST Requests For Products",
-          createdProducts: result
+          message: "Created Product Successfully",
+          createdProducts: {
+            name: result.name,
+            price: result.price,
+            _id: result._id,
+            request: {
+              type: "GET",
+              url: `http://localhost:3000/products/${result._id}`
+            }
+          }
         });
       } else {
         res.status(404).json({
@@ -62,11 +70,19 @@ router.post("/", (req, res, next) => {
 router.get("/:productID", (req, res, next) => {
   const id = req.params.productID;
   Product.findById(id)
+    .select("name price _id")
     .exec()
     .then(document => {
       console.log(document);
       if (document) {
-        res.status(200).json(document);
+        res.status(200).json({
+          product: document,
+          request: {
+            type: "GET",
+            description: "Provides a List Of All Products",
+            url: `http://localhost:3000/products`
+          }
+        });
       } else {
         res.status(404).json({
           message: "No Valid Entry Found"
@@ -92,7 +108,13 @@ router.patch("/:productID", (req, res, next) => {
     .exec()
     .then(result => {
       console.log(result);
-      res.status(200).json(result);
+      res.status(200).json({
+        message: "Product Updated",
+        request: {
+          type: "GET",
+          url: `http://localhost:3000/products/${id}`
+        }
+      });
     })
     .catch(err => {
       console.log(err);
@@ -107,7 +129,14 @@ router.delete("/:productID", (req, res, next) => {
   Product.deleteOne({ _id: id })
     .exec()
     .then(result => {
-      res.status(200).json(result);
+      res.status(200).json({
+        message: "Product Deleted",
+        request: {
+          type: "POST",
+          url: `http://localhost:3000/products`,
+          body: { name: "String", price: "Number" }
+        }
+      });
     })
     .catch(err => {
       console.log(err);
