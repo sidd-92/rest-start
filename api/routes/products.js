@@ -3,6 +3,8 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 const Product = require("../models/product");
 router.get("/", (req, res, next) => {
   Product.find()
@@ -28,7 +30,8 @@ router.get("/", (req, res, next) => {
     .catch(err => console.log(err));
 });
 
-router.post("/", (req, res, next) => {
+router.post("/", upload.single("productImage"), (req, res, next) => {
+  console.log(req.file);
   const newProduct = new Product({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,

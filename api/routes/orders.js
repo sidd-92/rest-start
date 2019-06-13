@@ -9,6 +9,7 @@ const router = express.Router();
 router.get("/", (req, res, next) => {
   Order.find()
     .select("product quantity _id")
+    .populate("product", "name price")
     .exec()
     .then(result => {
       const response = {
@@ -79,6 +80,7 @@ router.get("/:orderID", (req, res, next) => {
   const id = req.params.orderID;
   Order.findById(id)
     .select("product quantity _id")
+    .populate("product")
     .exec()
     .then(result => {
       console.log(result);

@@ -4,10 +4,10 @@ const productRoutes = require("./api/routes/products");
 const orderRoutes = require("./api/routes/orders");
 const morgan = require("morgan");
 const app = express();
-
+//
 const mongoose = require("mongoose");
 mongoose.connect(
-  `mongodb+srv://sidddude92:${
+  `mongodb+srv://nodeshop:${
     process.env.MONGO_ATLAS_PWD
   }@nodeshoprest-xitvt.mongodb.net/test?retryWrites=true&w=majority`,
   {
